@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -18,7 +19,7 @@ abstract class MviViewModel<Event : MviViewModel.MviEvent,
         Effect : MviViewModel.MviSideEffect> (initialState: State):
     ViewModel() {
         val states : StateFlow<State>
-        val effects : Flow<Effect>
+        val effects : SharedFlow<Effect>
         private val events = MutableSharedFlow<Event>()
         init {
               events
@@ -28,7 +29,7 @@ abstract class MviViewModel<Event : MviViewModel.MviEvent,
                   .also { result ->
                       states = result.toState(initialState)
                           .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = initialState)
-                      effects = result.toEffect()
+                      effects = result.toEffect().share()
                   }
         }
 

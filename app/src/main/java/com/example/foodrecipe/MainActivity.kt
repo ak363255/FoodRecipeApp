@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.FoodRecipeMainScreen
 import com.example.foodrecipe.ui.theme.FoodRecipeTheme
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     private var showSplashcreen = true
@@ -19,7 +20,9 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             FoodRecipeTheme {
-                FoodRecipeMainScreen {
+                FoodRecipeMainScreen(
+                    foodRecipeMainViewModel = koinViewModel()
+                ) {
                     showSplashcreen = false
                 }
             }

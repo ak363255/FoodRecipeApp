@@ -3,7 +3,7 @@ package com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.mod
 import com.example.foodrecipe.ui.base.MviViewModel
 
  data class ViewState(
-    val appOnboardingShown: Boolean = false
+    val showAppOnBoarding: Boolean = false
 ) : MviViewModel.MviState
 
  sealed interface ViewEvent : MviViewModel.MviEvent {

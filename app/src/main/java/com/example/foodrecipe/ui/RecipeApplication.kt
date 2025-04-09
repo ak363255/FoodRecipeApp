@@ -11,7 +11,7 @@ class RecipeApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@RecipeApplication)
-            AppDiModule.appDiModules
+            modules(AppDiModule.appDiModules)
         }
     }
 }
