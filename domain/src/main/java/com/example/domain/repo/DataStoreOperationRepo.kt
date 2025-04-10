@@ -6,15 +6,15 @@ import com.example.domain.model.Result
 
 
 interface DataStoreOperationRepo {
-     fun getValue(key: Preferences.Key<String>):Flow<Result<String>>
-     fun getValue(key: Preferences.Key<Double>):Flow<Result<Double>>
-     fun getValue(key: Preferences.Key<Boolean>):Flow<Result<Boolean>>
-     fun getValue(key: Preferences.Key<Long>):Flow<Result<Long>>
-     fun getValue(key: Preferences.Key<Int>):Flow<Result<Int>>
+     fun getStringDataStoreValue(key: Preferences.Key<String>):Flow<Result<String>>
+     fun getDoubleDataStoreValue(key: Preferences.Key<Double>):Flow<Result<Double>>
+     fun getBooleanDataStoreValue(key: Preferences.Key<Boolean>):Flow<Result<Boolean>>
+     fun getLongDataStoreValue(key: Preferences.Key<Long>):Flow<Result<Long>>
+     fun getIntDataStoreValue(key: Preferences.Key<Int>):Flow<Result<Int>>
 
-    suspend fun setValue(key: Preferences.Key<String>, value: String)
-    suspend fun setValue(key: Preferences.Key<Double>, value: Double)
-    suspend fun setValue(key: Preferences.Key<Boolean>, value: Boolean)
-    suspend fun setValue(key: Preferences.Key<Long>, value: Long)
-    suspend fun setValue(key: Preferences.Key<Int>, value: Int)
+    suspend fun setStringToDataStore(key: Preferences.Key<String>, value: String)
+    suspend fun setDoubleToDataStore(key: Preferences.Key<Double>, value: Double)
+    suspend fun setBooleanToDataStore(key: Preferences.Key<Boolean>, value: Boolean)
+    suspend fun setLongToDataStore(key: Preferences.Key<Long>, value: Long)
+    suspend fun setIntToDataStore(key: Preferences.Key<Int>, value: Int)
 }

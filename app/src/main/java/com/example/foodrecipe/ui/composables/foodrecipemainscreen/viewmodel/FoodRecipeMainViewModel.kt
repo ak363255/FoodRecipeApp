@@ -36,7 +36,7 @@ class FoodRecipeMainViewModel(
     override fun ViewResult.reduce(initialState: ViewState): ViewState {
         return when (val result = this) {
             is ViewResult.AppOnboardingShown -> {
-                initialState.copy(appOnboardingShown = result.shown)
+                initialState.copy(showAppOnBoarding = !result.shown)
             }
         }
     }

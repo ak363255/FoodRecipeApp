@@ -1,7 +1,11 @@
 package com.example.foodrecipe.ui.di
 
+import com.example.foodrecipe.ui.composables.apponboarding.viewmodel.AppOnboardingViewModel
+import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.FoodRecipeMainViewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewmodelmoudule = module {
-
+    viewModelOf(::FoodRecipeMainViewModel)
+    viewModelOf(::AppOnboardingViewModel)
 }

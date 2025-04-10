@@ -10,6 +10,5 @@ class OnboardingStatusUseCase(
     private val dataStoreOperationRepo: DataStoreOperationRepo,
     ioDispatcher: CoroutineDispatcher
 ) : BaseFlowUseCase<Preferences.Key<Boolean>, Boolean>(ioDispatcher) {
-    override  fun execute(parameters: Preferences.Key<Boolean>): Flow<Result<Boolean>> = dataStoreOperationRepo.getValue(parameters)
-
+    override  fun execute(parameters: Preferences.Key<Boolean>): Flow<Result<Boolean>> = dataStoreOperationRepo.getBooleanDataStoreValue(parameters)
 }
