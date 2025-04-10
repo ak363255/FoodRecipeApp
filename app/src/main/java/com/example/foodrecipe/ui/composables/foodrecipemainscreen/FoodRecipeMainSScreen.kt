@@ -1,6 +1,5 @@
 package com.example.foodrecipe.ui.composables.foodrecipemainscreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,7 +20,6 @@ import com.example.foodrecipe.ui.composables.apponboarding.pageList
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.FoodRecipeMainViewModel
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEvent
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -29,23 +28,15 @@ import org.koin.androidx.compose.koinViewModel
 fun FoodRecipeMainScreen(
     foodRecipeMainViewModel: FoodRecipeMainViewModel,
     modifier: Modifier = Modifier,
-    onFinished: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingStatus)
-       /* foodRecipeMainViewModel.effects.collect { effect ->
-            launch {
-                Log.d("EFFECT", "effect ${effect::class.java}")
-            }
-        }*/
-        delay(1000)
-        onFinished()
     }
     val uiState by foodRecipeMainViewModel.states.collectAsState()
     Scaffold(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(color = Color.Black)
     ) {
         Box(
             modifier = modifier
@@ -62,10 +53,15 @@ fun FoodRecipeMainScreen(
                 ) {
                 composable<RecipeHomePageRoute.AppOnboardingPage> {
                     AppBoardingScreen(
-                        mainNavController = navController,
+                        onActionCompleted = {
+                            navController.navigate(RecipeHomePageRoute.RecipeHomePage){
+                                popUpTo<RecipeHomePageRoute.AppOnboardingPage>{
+                                    inclusive = true
+                                }
+                            }
+                        },
                         modifier = Modifier,
                         appOnboardingViewModel = koinViewModel(),
-                        onBoardingPageList = pageList
                     )
                 }
                 composable<RecipeHomePageRoute.RecipeHomePage> {

@@ -1,5 +1,7 @@
 package com.example.foodrecipe.ui.composables.apponboarding
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -22,32 +23,37 @@ import androidx.compose.material.icons.filled.MobileFriendly
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.example.foodrecipe.R
 import com.example.foodrecipe.ui.composables.apponboarding.viewmodel.AppOnboardingViewModel
-import com.example.foodrecipe.ui.composables.foodrecipemainscreen.RecipeHomePageRoute
 import com.example.foodrecipe.ui.theme.RecipeAppColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun AppBoardingScreen(
-    mainNavController: NavHostController,
+    onActionCompleted: ()-> Unit,
     appOnboardingViewModel: AppOnboardingViewModel,
-    onBoardingPageList: List<OnboardingPage>,
     modifier: Modifier = Modifier
 ) {
 
@@ -55,6 +61,16 @@ fun AppBoardingScreen(
     val pagerState = rememberPagerState(pageCount = {
         pageList.size
     })
+    val animateColor = animateColorAsState(targetValue = pageList[pagerState.currentPage].pageColor, animationSpec = tween(
+        durationMillis = 700
+    ))
+
+    val uiController = rememberSystemUiController()
+    SideEffect {
+
+        uiController.setStatusBarColor(color = Color.Black,darkIcons = false)
+
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -66,7 +82,7 @@ fun AppBoardingScreen(
                 .fillMaxHeight(0.60f)
                 .background(
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-                    color = pageList[pagerState.currentPage].pageColor
+                    color = animateColor.value
                 )
 
         ) {
@@ -78,11 +94,18 @@ fun AppBoardingScreen(
             }
         }
         if (pagerState.currentPage == pageList.size - 1) {
+            val animateFloat = remember { androidx.compose.animation.core.Animatable(initialValue = 1f) }
+            LaunchedEffect(Unit) {
+                animateFloat.animateTo(0f, animationSpec = tween(durationMillis = 500))
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 20.dp, start = 16.dp, end = 16.dp)
-                    .align(Alignment.BottomCenter),
+                    .align(Alignment.BottomCenter)
+                    .graphicsLayer{
+                        translationY = 20.dp.toPx()*animateFloat.value
+                    },
                 horizontalArrangement = Arrangement.Center
 
             ) {
@@ -94,7 +117,7 @@ fun AppBoardingScreen(
                     ),
                     modifier = Modifier
                         .clickable {
-                            mainNavController.navigate(RecipeHomePageRoute.RecipeHomePage)
+                            onActionCompleted()
                         }
                         .background(color = RecipeAppColor.Green)
                         .padding(horizontal = 32.dp, vertical = 12.dp)
@@ -105,23 +128,31 @@ fun AppBoardingScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp, start = 16.dp, end = 16.dp)
+                    .padding(bottom = 50.dp, start = 24.dp, end = 24.dp)
                     .align(Alignment.BottomCenter),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
 
             ) {
                 Text(
-                    "Skip",
+                    text = "Skip",
                     style = TextStyle(
                         fontSize = 14.sp,
                         color = RecipeAppColor.Black
                     ),
                     modifier = Modifier.clickable {
-                        mainNavController.navigate(RecipeHomePageRoute.RecipeHomePage)
+                        onActionCompleted()
                     }
                 )
+
                 Text(
-                    "Next",
+
+                    text = buildAnnotatedString {
+                        append("Next ")
+                        withStyle(style = SpanStyle(fontSize = 16.sp, fontWeight = FontWeight.ExtraBold)){
+                            append(">")
+                        }
+                    },
                     style = TextStyle(
                         fontSize = 14.sp,
                         color = RecipeAppColor.Black

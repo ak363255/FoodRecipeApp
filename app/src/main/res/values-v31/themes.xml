@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.FoodRecipe" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="windowActionBar">false</item>
-    </style>
-
-    <style name="Theme.AppStart" parent="Theme.SplashScreen.IconBackground">
-        <item name="android:windowSplashScreenBackground">@color/black</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_icon</item>
-        <item name="postSplashScreenTheme">@style/Theme.FoodRecipe</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <!-- Ensure icons are NOT dark (white icons) -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
