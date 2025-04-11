@@ -107,6 +107,9 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.androidx.material3.window.size.class1)
 
+    //accompanist
+    implementation(libs.accompanist.systemuicontroller)
+
 
 
 
