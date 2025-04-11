@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -35,20 +34,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavHostController
 import com.example.foodrecipe.R
 import com.example.foodrecipe.ui.composables.apponboarding.viewmodel.AppOnboardingViewModel
-import com.example.foodrecipe.ui.composables.foodrecipemainscreen.RecipeHomePageRoute
 import com.example.foodrecipe.ui.theme.RecipeAppColor
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun AppBoardingScreen(
-    mainNavController: NavHostController,
+    onboardingCompletedAction: () -> Unit,
     appOnboardingViewModel: AppOnboardingViewModel,
     onBoardingPageList: List<OnboardingPage>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -94,7 +91,7 @@ fun AppBoardingScreen(
                     ),
                     modifier = Modifier
                         .clickable {
-                            mainNavController.navigate(RecipeHomePageRoute.RecipeHomePage)
+                            onboardingCompletedAction()
                         }
                         .background(color = RecipeAppColor.Green)
                         .padding(horizontal = 32.dp, vertical = 12.dp)
@@ -117,7 +114,7 @@ fun AppBoardingScreen(
                         color = RecipeAppColor.Black
                     ),
                     modifier = Modifier.clickable {
-                        mainNavController.navigate(RecipeHomePageRoute.RecipeHomePage)
+                        onboardingCompletedAction()
                     }
                 )
                 Text(

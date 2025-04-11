@@ -10,6 +10,8 @@ class OnboardingActionCompletedUseCase(
     private val dispatcher : CoroutineDispatcher
 ):BaseUseCase<Preferences.Key<Boolean>,Unit>(dispatcher) {
     override suspend fun execute(parameters: Preferences.Key<Boolean>): Result<Unit> {
+        dataStoreOperationRepo.setBooleanToDataStore(parameters,true)
+        return Result.Success(Unit)
     }
 
 }

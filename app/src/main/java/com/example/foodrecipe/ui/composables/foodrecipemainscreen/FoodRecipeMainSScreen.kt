@@ -1,6 +1,5 @@
 package com.example.foodrecipe.ui.composables.foodrecipemainscreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.foodrecipe.ui.composables.apponboarding.AppBoardingScreen
 import com.example.foodrecipe.ui.composables.apponboarding.pageList
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.FoodRecipeMainViewModel
+import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEffect
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,13 +31,20 @@ fun FoodRecipeMainScreen(
     modifier: Modifier = Modifier,
     onFinished: () -> Unit,
 ) {
+    val navController = rememberNavController()
     LaunchedEffect(Unit) {
         foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingStatus)
-       /* foodRecipeMainViewModel.effects.collect { effect ->
-            launch {
-                Log.d("EFFECT", "effect ${effect::class.java}")
+        launch {
+            foodRecipeMainViewModel.effects.collect { effect ->
+                launch {
+                    when (effect) {
+                        ViewEffect.OpenRecipeHomePage -> {
+                            navController.navigate(RecipeHomePageRoute.RecipeHomePage)
+                        }
+                    }
+                }
             }
-        }*/
+        }
         delay(1000)
         onFinished()
     }
@@ -52,17 +59,18 @@ fun FoodRecipeMainScreen(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            val navController = rememberNavController()
             val initialDestination =
                 if (uiState.showAppOnBoarding) RecipeHomePageRoute.AppOnboardingPage else RecipeHomePageRoute.RecipeHomePage
             NavHost(
                 navController = navController,
                 startDestination = initialDestination,
                 route = Graph.Root::class
-                ) {
+            ) {
                 composable<RecipeHomePageRoute.AppOnboardingPage> {
                     AppBoardingScreen(
-                        mainNavController = navController,
+                        onboardingCompletedAction = {
+                            foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingCompletedEvent)
+                        },
                         modifier = Modifier,
                         appOnboardingViewModel = koinViewModel(),
                         onBoardingPageList = pageList
@@ -75,10 +83,6 @@ fun FoodRecipeMainScreen(
         }
     }
 }
-
-
-
-
 
 
 sealed class RecipeHomePageRoute {

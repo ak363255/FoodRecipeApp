@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -41,7 +40,7 @@ abstract class MviViewModel<Event : MviViewModel.MviEvent,
     }
     protected abstract fun Flow<Event>.toResult():Flow<Result>
     protected abstract fun Result.reduce(initialState: State):State
-    protected open fun Flow<Result>.toEffect():Flow<Effect> = emptyFlow()
+    abstract fun Flow<Result>.toEffect():Flow<Effect>
     private fun Flow<Result>.toState(initialState: State):Flow<State>{
         return scan(initialState){prevState,result -> result.reduce(prevState)}
     }
