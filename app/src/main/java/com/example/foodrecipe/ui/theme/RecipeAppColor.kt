@@ -17,4 +17,6 @@ object RecipeAppColor{
     val LightGreen = Color(0xFF1DAE90)
     val Green = Color(0xFF1CB77E)
     val LightOrange = Color(0xFFFBBB92)
+
+    val bottomBarBgColor = Color(0xFF3C3C2E)
 }
