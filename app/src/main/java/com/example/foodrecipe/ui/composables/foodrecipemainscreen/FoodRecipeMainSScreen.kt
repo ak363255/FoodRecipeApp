@@ -14,23 +14,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SetMeal
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -50,8 +45,6 @@ import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.Food
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEffect
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEvent
 import com.example.foodrecipe.ui.theme.RecipeAppColor
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -162,6 +155,7 @@ fun FoodRecipeMainScreen(
 ) {
     val navController = rememberNavController()
     val uiState by foodRecipeMainViewModel.states.collectAsState()
+    val bottomNavState = rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingStatus)
@@ -185,7 +179,7 @@ fun FoodRecipeMainScreen(
             .fillMaxSize()
             .background(color = Color.Black),
         bottomBar = {
-            AnimatedVisibility(visible = !uiState.showAppOnBoarding) {
+            AnimatedVisibility(visible = bottomNavState.value) {
                 RecipeBottomBar(
                     navController = navController,
                     bottomBarList = bottomNavBarList
@@ -214,6 +208,7 @@ fun FoodRecipeMainScreen(
                 route = Graph.Root::class
             ) {
                 composable<RecipeHomePageRoute.AppOnboardingPage> {
+                    bottomNavState.value = false
                     AppBoardingScreen(
                         onActionCompleted = {
                             foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingCompletedEvent)
@@ -223,19 +218,12 @@ fun FoodRecipeMainScreen(
                     )
                 }
                 composable<RecipeHomePageRoute.RecipeHomePage> {
+                    bottomNavState.value = true
                       Box(
                          modifier = Modifier
                              .fillMaxSize()
                              .background(color = RecipeAppColor.Black)
                       ){
-                          val systemUiController = rememberSystemUiController()
-                          SideEffect {
-                              // Change status bar and navigation bar colors
-                              systemUiController.setStatusBarColor(
-                                  color = Color(0xFF6200EE), // Purple-ish
-                                  darkIcons = false // false = light icons
-                              )
-                          }
 
                       }
                 }
