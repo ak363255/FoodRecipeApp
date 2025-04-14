@@ -219,6 +219,7 @@ fun FoodRecipeMainScreen(
                 }
                 composable<RecipeHomePageRoute.RecipeHomePage> {
                     bottomNavState.value = true
+
                       Box(
                          modifier = Modifier
                              .fillMaxSize()

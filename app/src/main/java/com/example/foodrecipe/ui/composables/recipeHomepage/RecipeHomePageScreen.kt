@@ -1,0 +1,9 @@
+package com.example.foodrecipe.ui.composables.recipeHomepage
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+@Composable
+fun RecipeHomePageScreen(modifier : Modifier = Modifier){
+
+}

@@ -9,12 +9,14 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
+        
         minSdk = libs.versions.minSdk.get().toInt()
         android.buildFeatures.buildConfig = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String","SPONACULAR_BASE_URL","\"${"https://api.spoonacular.com"}\"")
         buildConfigField("String","SPONACULAR_API_KEY","\"${project.properties.get("SPONACULAR_API_KEY").toString()}\"")
+
     }
 
     buildTypes {

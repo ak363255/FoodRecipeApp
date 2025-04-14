@@ -57,7 +57,7 @@ data class Ingredient(
     val amount: Int,
     val unit: String,
     val meta: List<String>,
-    val measures: Measures
+    val measures: Measures,
 )
 
 data class Measures(

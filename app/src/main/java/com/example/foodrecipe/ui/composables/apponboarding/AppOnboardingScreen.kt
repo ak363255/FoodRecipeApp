@@ -65,18 +65,6 @@ fun AppBoardingScreen(
         durationMillis = 700
     ))
 
-    val systemUiController = rememberSystemUiController()
-
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = Color.Blue, // dark color to show light icons
-            darkIcons = false
-        )
-        systemUiController.setNavigationBarColor(
-            color = Color(0xFF3700B3),
-            darkIcons = false
-        )
-    }
     Box(
         modifier = modifier
             .fillMaxSize()
