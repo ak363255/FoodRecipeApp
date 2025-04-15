@@ -44,6 +44,8 @@ import com.example.foodrecipe.ui.composables.apponboarding.AppBoardingScreen
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.FoodRecipeMainViewModel
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEffect
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.models.ViewEvent
+import com.example.foodrecipe.ui.composables.recipeHomepage.RecipeHomePageScreen
+import com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel.RecipeHomePageViewModel
 import com.example.foodrecipe.ui.theme.RecipeAppColor
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
@@ -219,14 +221,11 @@ fun FoodRecipeMainScreen(
                 }
                 composable<RecipeHomePageRoute.RecipeHomePage> {
                     bottomNavState.value = true
-
-                      Box(
-                         modifier = Modifier
-                             .fillMaxSize()
-                             .background(color = RecipeAppColor.Black)
-                      ){
-
-                      }
+                    val viewmodel : RecipeHomePageViewModel = koinViewModel()
+                    RecipeHomePageScreen(
+                        modifier = Modifier,
+                        recipeHomePageViewModel = viewmodel
+                    )
                 }
                 composable<RecipeHomePageRoute.BookmarkPage> {
                     Text("BookMark")

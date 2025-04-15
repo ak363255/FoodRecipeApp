@@ -1,5 +1,10 @@
 package com.example.data.datamodels
 
+import com.example.domain.model.CusineName
+import com.example.domain.model.CusineNames
+import com.example.domain.model.IngredientName
+import com.example.domain.model.IngredientNames
+
 
 data class IngredientDataModelList(
     val ingredients: List<IngredientDataModel>
@@ -51,6 +56,25 @@ data class CusineDataModel(
     val color: String
 )
 
+fun IngredientDataModel.toDomainModel():IngredientName{
+    return IngredientName(
+        name = this.name,
+        color = this.color
+    )
+}
+
+fun IngredientDataModelList.toDomainModel():IngredientNames{
+    val ingredients = this.ingredients.map { it.toDomainModel() }
+    return IngredientNames(ingredientNames = ingredients)
+}
+
+fun CusineDataModel.toDomainModel():CusineName{
+    return CusineName(
+        name = this.name,
+        color = this.color
+    )
+}
+
 fun getDummyCusines(): CusinesDataModelList{
     val cusines = listOf(
         CusineDataModel(name = "Vietnamese", color = "#d8232a"),
@@ -66,4 +90,9 @@ fun getDummyCusines(): CusinesDataModelList{
     return CusinesDataModelList(
         cusines = cusines
     )
+}
+
+fun CusinesDataModelList.toDomainModel():CusineNames{
+    val cusines = this.cusines.map { it.toDomainModel() }
+    return CusineNames(cusineNames = cusines)
 }

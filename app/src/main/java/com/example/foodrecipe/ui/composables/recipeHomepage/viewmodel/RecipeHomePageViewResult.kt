@@ -9,13 +9,14 @@ import com.example.foodrecipe.ui.base.MviViewModel
 
 sealed class RecipeHomePageViewResult : MviViewModel.MviResult {
     data class RecipeHomePageContentResult(
-        private val recipeList: List<Recipe>,
-        private val cuisines : List<CusineName>,
-        private val ingredients : List<IngredientName>
+         val recipeList: List<Recipe>,
+         val cuisines : List<CusineName>,
+         val ingredients : List<IngredientName>
     ): RecipeHomePageViewResult()
 
-    data class OnIngredientSheet(private val ingredients: List<IngredientName>): RecipeHomePageViewResult()
-    data class OnRecipeDetailPage(private val recipe: Recipe): RecipeHomePageViewResult()
-    data class OnIngredientSearchPage(private val ingredient: Ingredient): RecipeHomePageViewResult()
-    data class OnCuisineSearchPage(private val cuisine: CusineName): RecipeHomePageViewResult()
+    data class OnIngredientSheet( val ingredients: List<IngredientName>): RecipeHomePageViewResult()
+    data class OnRecipeDetailPage( val recipe: Recipe): RecipeHomePageViewResult()
+    data class OnIngredientSearchPage( val ingredient: Ingredient): RecipeHomePageViewResult()
+    data class OnCuisineSearchPage( val cuisine: CusineName): RecipeHomePageViewResult()
+    data object NoResultFound:RecipeHomePageViewResult()
 }
