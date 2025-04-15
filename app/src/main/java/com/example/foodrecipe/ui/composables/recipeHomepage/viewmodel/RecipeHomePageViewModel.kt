@@ -1,6 +1,5 @@
 package com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel
 
-import androidx.lifecycle.ViewModel
 import com.example.domain.model.Result
 import com.example.domain.usecase.GetCuisineUsecase
 import com.example.domain.usecase.GetIngredientUsecase
@@ -11,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 

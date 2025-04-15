@@ -6,6 +6,6 @@ import retrofit2.http.Url
 
 interface ApiService {
     @GET
-     fun makeGetRequest(@Url url:String): retrofit2.Response<ResponseBody>
+     suspend fun makeGetRequest(@Url url:String): retrofit2.Response<ResponseBody>
 
 }

@@ -1,5 +1,6 @@
 package com.example.data.datamodels
 
+import com.example.domain.model.Equipment
 import com.example.domain.model.Ingredient
 import com.example.domain.model.Instruction
 import com.example.domain.model.RecipeList
@@ -15,7 +16,7 @@ data class RecipesData(
 
 data class Us(
 
-    @SerializedName("amount") var amount: Int? = null,
+    @SerializedName("amount") var amount: Double? = null,
     @SerializedName("unitShort") var unitShort: String? = null,
     @SerializedName("unitLong") var unitLong: String? = null
 
@@ -23,7 +24,7 @@ data class Us(
 
 data class Metric(
 
-    @SerializedName("amount") var amount: Int? = null,
+    @SerializedName("amount") var amount: Double? = null,
     @SerializedName("unitShort") var unitShort: String? = null,
     @SerializedName("unitLong") var unitLong: String? = null
 
@@ -46,7 +47,7 @@ data class ExtendedIngredients(
     @SerializedName("nameClean") var nameClean: String? = null,
     @SerializedName("original") var original: String? = null,
     @SerializedName("originalName") var originalName: String? = null,
-    @SerializedName("amount") var amount: Int? = null,
+    @SerializedName("amount") var amount: Double? = null,
     @SerializedName("unit") var unit: String? = null,
     @SerializedName("meta") var meta: ArrayList<String> = arrayListOf(),
     @SerializedName("measures") var measures: Measures? = Measures()
@@ -67,8 +68,15 @@ data class Steps(
     @SerializedName("number") var number: Int? = null,
     @SerializedName("step") var step: String? = null,
     @SerializedName("ingredients") var ingredients: ArrayList<Ingredients> = arrayListOf(),
-    @SerializedName("equipment") var equipment: ArrayList<String> = arrayListOf()
+    @SerializedName("equipment") var equipment: ArrayList<EquipmentData> = arrayListOf()
 
+)
+
+data class EquipmentData(
+    @SerializedName("id") var id:Int?,
+    @SerializedName("name") var name: String?,
+    @SerializedName("image") var image: String?,
+    @SerializedName("localizedName") var localizedName: String?,
 )
 
 data class AnalyzedInstructions(
@@ -183,25 +191,25 @@ fun ExtendedIngredients.toDomain(): Ingredient {
         nameClean = nameClean.orEmpty(),
         original = original.orEmpty(),
         originalName = originalName.orEmpty(),
-        amount = amount ?: 0,
+        amount = amount ?: 0.0,
         unit = unit.orEmpty(),
         meta = meta,
-        measures = measures?.toDomain() ?: com.example.domain.model.Measures(UnitMeasure(0, "", ""), UnitMeasure(0, "", ""))
+        measures = measures?.toDomain() ?: com.example.domain.model.Measures(UnitMeasure(0.0, "", ""), UnitMeasure(0.0, "", ""))
     )
 }
 
 // Measures → Measures
 fun Measures.toDomain(): com.example.domain.model.Measures {
     return com.example.domain.model.Measures(
-        us = us?.toDomain() ?: UnitMeasure(0, "", ""),
-        metric = metric?.toDomain() ?: UnitMeasure(0, "", "")
+        us = us?.toDomain() ?: UnitMeasure(0.0, "", ""),
+        metric = metric?.toDomain() ?: UnitMeasure(0.0, "", "")
     )
 }
 
 // Us / Metric → UnitMeasure
 fun Us.toDomain(): UnitMeasure {
     return UnitMeasure(
-        amount = amount ?: 0,
+        amount = amount ?: 0.0,
         unitShort = unitShort.orEmpty(),
         unitLong = unitLong.orEmpty()
     )
@@ -209,7 +217,7 @@ fun Us.toDomain(): UnitMeasure {
 
 fun Metric.toDomain(): UnitMeasure {
     return UnitMeasure(
-        amount = amount ?: 0,
+        amount = amount ?: 0.0,
         unitShort = unitShort.orEmpty(),
         unitLong = unitLong.orEmpty()
     )
@@ -229,7 +237,7 @@ fun Steps.toDomain(): Step {
         number = number ?: 0,
         step = step.orEmpty(),
         ingredients = ingredients.map { it.toDomain() },
-        equipment = equipment
+        equipment = equipment.map { it.toDomainModel() }
     )
 }
 
@@ -240,5 +248,13 @@ fun Ingredients.toDomain(): SimpleIngredient {
         name = name.orEmpty(),
         localizedName = localizedName.orEmpty(),
         image = image.orEmpty()
+    )
+}
+fun EquipmentData.toDomainModel(): Equipment{
+    return Equipment(
+        id = this.id?:0,
+        image = this.image?:"",
+        name = this.name?:"",
+        localizedName = this.localizedName?:""
     )
 }

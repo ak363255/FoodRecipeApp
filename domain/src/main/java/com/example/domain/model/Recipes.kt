@@ -54,7 +54,7 @@ data class Ingredient(
     val nameClean: String,
     val original: String,
     val originalName: String,
-    val amount: Int,
+    val amount: Double,
     val unit: String,
     val meta: List<String>,
     val measures: Measures,
@@ -66,7 +66,7 @@ data class Measures(
 )
 
 data class UnitMeasure(
-    val amount: Int,
+    val amount: Double,
     val unitShort: String,
     val unitLong: String
 )
@@ -80,9 +80,14 @@ data class Step(
     val number: Int,
     val step: String,
     val ingredients: List<SimpleIngredient>,
-    val equipment: List<String>
+    val equipment: List<Equipment>
 )
-
+data class Equipment(
+     val id:Int,
+    val name: String,
+     val image: String,
+    val localizedName: String,
+)
 data class SimpleIngredient(
     val id: Int,
     val name: String,

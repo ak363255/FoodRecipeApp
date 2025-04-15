@@ -221,10 +221,9 @@ fun FoodRecipeMainScreen(
                 }
                 composable<RecipeHomePageRoute.RecipeHomePage> {
                     bottomNavState.value = true
-                    val viewmodel : RecipeHomePageViewModel = koinViewModel()
                     RecipeHomePageScreen(
                         modifier = Modifier,
-                        recipeHomePageViewModel = viewmodel
+                        recipeHomePageViewModel = koinViewModel()
                     )
                 }
                 composable<RecipeHomePageRoute.BookmarkPage> {

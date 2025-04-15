@@ -1,5 +1,6 @@
 package com.example.foodrecipe.ui.di
 
+import com.example.domain.usecase.GetCuisineUsecase
 import com.example.domain.usecase.GetIngredientUsecase
 import com.example.domain.usecase.GetRandomRecipeUseCase
 import com.example.domain.usecase.OnboardingActionCompletedUseCase
@@ -17,7 +18,7 @@ val usecasemodule = module {
         GetRandomRecipeUseCase(get(),get(IoDispatcher))
     }
     single {
-        GetIngredientUsecase(get(),get(IoDispatcher))
+        GetCuisineUsecase(get(),get(IoDispatcher))
     }
     single {
         GetIngredientUsecase(get(),get(IoDispatcher))
