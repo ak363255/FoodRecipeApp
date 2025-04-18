@@ -20,6 +20,9 @@ class RecipeHomePageViewModel(
 ): MviViewModel<RecipeHomePageViewEvent, RecipeHomePageViewResult, RecipeHomePageViewState, RecipeHomePageEffects>(
     RecipeHomePageViewState()
 ) {
+    init {
+        processEvent(RecipeHomePageViewEvent.GetAllRecipeHomePageContent)
+    }
     override fun Flow<RecipeHomePageViewEvent>.toResult(): Flow<RecipeHomePageViewResult> {
         return merge(
             filterIsInstance<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>().togetHomePageContent()

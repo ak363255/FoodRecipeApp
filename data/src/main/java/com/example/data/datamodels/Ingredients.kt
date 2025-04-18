@@ -16,34 +16,27 @@ data class IngredientDataModel(
 
 fun getDummyIngredients(): IngredientDataModelList{
     val ingredients = listOf(
-        IngredientDataModel(name = "Avacado", color = "#d8232a"),
-        IngredientDataModel(name = "Apple", color = "#d8232a"),
-        IngredientDataModel(name = "Artichoke", color = "#d8232a"),
-        IngredientDataModel(name = "Egg", color = "#d8232a"),
-        IngredientDataModel(name = "Basil", color = "#d8232a"),
-        IngredientDataModel(name = "Tomato", color = "#d8232a"),
-        IngredientDataModel(name = "Grape", color = "#d8232a"),
-        IngredientDataModel(name = "Almond", color = "#d8232a"),
-        IngredientDataModel(name = "Borocoli", color = "#d8232a"),
-        IngredientDataModel(name = "Mint", color = "#d8232a"),
-        IngredientDataModel(name = "Cauliflower", color = "#d8232a"),
-        IngredientDataModel(name = "Coconut", color = "#d8232a"),
-        IngredientDataModel(name = "Chicken", color = "#d8232a"),
-        IngredientDataModel(name = "Beetroot", color = "#d8232a"),
-        IngredientDataModel(name = "Garlic", color = "#d8232a"),
-        IngredientDataModel(name = "Olive Oil", color = "#d8232a"),
-        IngredientDataModel(name = "Flour", color = "#d8232a"),
-        IngredientDataModel(name = "Butter", color = "#d8232a"),
-        IngredientDataModel(name = "Corn", color = "#d8232a"),
-        IngredientDataModel(name = "BlueBerry", color = "#d8232a"),
-        IngredientDataModel(name = "Carrot", color = "#d8232a"),
-        IngredientDataModel(name = "EggPlant", color = "#d8232a"),
-        IngredientDataModel(name = "Acai Berries", color = "#d8232a"),
-        IngredientDataModel(name = "Banana", color = "#d8232a"),
-        IngredientDataModel(name = "Date", color = "#d8232a"),
-        IngredientDataModel(name = "Apricot", color = "#d8232a"),
-    )
-    return IngredientDataModelList(
+        IngredientDataModel(name = "Avacado", color = "#FF6F61"),
+        IngredientDataModel(name = "Apple", color = "#6B5B95"),
+        IngredientDataModel(name = "Artichoke", color = "#88B04B"),
+        IngredientDataModel(name = "Egg", color = "#F7CAC9"),
+        IngredientDataModel(name = "Basil", color = "#92A8D1"),
+        IngredientDataModel(name = "Tomato", color = "#955251"),
+        IngredientDataModel(name = "Grape", color = "#B565A7"),
+        IngredientDataModel(name = "Almond", color = "#009B77"),
+        IngredientDataModel(name = "Borocoli", color = "#DD4124"),
+        IngredientDataModel(name = "Mint", color = "#45B8AC"),
+        IngredientDataModel(name = "Cauliflower", color = "#EFC050"),
+        IngredientDataModel(name = "Coconut", color = "#5B5EA6"),
+        IngredientDataModel(name = "Chicken", color = "#9B2335"),
+        IngredientDataModel(name = "Beetroot", color = "#DFCFBE"),
+        IngredientDataModel(name = "Garlic", color = "#BC243C"),
+        IngredientDataModel(name = "Olive Oil", color = "#C3447A"),
+        IngredientDataModel(name = "Flour", color = "#98B4D4"),
+        IngredientDataModel(name = "Butter", color = "#C0AB8E"),
+        IngredientDataModel(name = "Corn", color = "#F4E1D2")
+        )
+            return IngredientDataModelList(
         ingredients = ingredients
     )
 }
@@ -77,15 +70,15 @@ fun CusineDataModel.toDomainModel():CusineName{
 
 fun getDummyCusines(): CusinesDataModelList{
     val cusines = listOf(
-        CusineDataModel(name = "Vietnamese", color = "#d8232a"),
-        CusineDataModel(name = "American", color = "#d8232a"),
-        CusineDataModel(name = "Chinese", color = "#d8232a"),
-        CusineDataModel(name = "German", color = "#d8232a"),
-        CusineDataModel(name = "French", color = "#d8232a"),
-        CusineDataModel(name = "Korean", color = "#d8232a"),
-        CusineDataModel(name = "Mexican", color = "#d8232a"),
-        CusineDataModel(name = "Spanish", color = "#d8232a"),
-        CusineDataModel(name = "African", color = "#d8232a"),
+        CusineDataModel(name = "Vietnamese", color = "#FF6F61"),
+        CusineDataModel(name = "American", color = "#6B5B95"),
+        CusineDataModel(name = "Chinese", color = "#88B04B"),
+        CusineDataModel(name = "German", color = "#F7CAC9"),
+        CusineDataModel(name = "French", color = "#92A8D1"),
+        CusineDataModel(name = "Korean", color = "#955251"),
+        CusineDataModel(name = "Mexican", color = "#B565A7"),
+        CusineDataModel(name = "Spanish", color = "#009B77"),
+        CusineDataModel(name = "African", color = "#EFC050"),
     )
     return CusinesDataModelList(
         cusines = cusines

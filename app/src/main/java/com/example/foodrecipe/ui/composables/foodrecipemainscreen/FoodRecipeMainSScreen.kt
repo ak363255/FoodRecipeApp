@@ -192,6 +192,7 @@ fun FoodRecipeMainScreen(
                             popUpTo<RecipeHomePageRoute.RecipeHomePage>{
                                 inclusive = false
                             }
+                            launchSingleTop = true
                         }
                     }
                 }
