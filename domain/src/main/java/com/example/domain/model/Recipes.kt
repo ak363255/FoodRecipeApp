@@ -1,10 +1,12 @@
 package com.example.domain.model
 
+import kotlinx.serialization.Serializable
+
 // Domain model for the entire list of recipes
 data class RecipeList(
     val recipes: List<Recipe>
 )
-
+@Serializable
 data class Recipe(
     val id: Int,
     val image: String,
@@ -44,7 +46,7 @@ data class Recipe(
     val spoonacularScore: Double,
     val spoonacularSourceUrl: String
 )
-
+@Serializable
 data class Ingredient(
     val id: Int,
     val aisle: String,
@@ -59,35 +61,37 @@ data class Ingredient(
     val meta: List<String>,
     val measures: Measures,
 )
-
+@Serializable
 data class Measures(
     val us: UnitMeasure,
     val metric: UnitMeasure
 )
-
+@Serializable
 data class UnitMeasure(
     val amount: Double,
     val unitShort: String,
     val unitLong: String
 )
-
+@Serializable
 data class Instruction(
     val name: String,
     val steps: List<Step>
 )
-
+@Serializable
 data class Step(
     val number: Int,
     val step: String,
     val ingredients: List<SimpleIngredient>,
     val equipment: List<Equipment>
 )
+@Serializable
 data class Equipment(
      val id:Int,
     val name: String,
      val image: String,
     val localizedName: String,
 )
+@Serializable
 data class SimpleIngredient(
     val id: Int,
     val name: String,

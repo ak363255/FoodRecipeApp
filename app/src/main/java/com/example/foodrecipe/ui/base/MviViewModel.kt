@@ -1,5 +1,6 @@
 package com.example.foodrecipe.ui.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
@@ -26,8 +27,9 @@ abstract class MviViewModel<Event : MviViewModel.MviEvent,
                   .toResult()
                   .share()
                   .also { result ->
+                      Log.d("RESULT","result is ${result}")
                       states = result.toState(initialState)
-                          .stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = initialState)
+                          .stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = initialState)
                       effects = result.toEffect().share()
                   }
         }

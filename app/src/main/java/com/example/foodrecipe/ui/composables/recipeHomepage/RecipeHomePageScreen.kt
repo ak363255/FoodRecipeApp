@@ -1,12 +1,13 @@
 package com.example.foodrecipe.ui.composables.recipeHomepage
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -19,23 +20,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,37 +45,118 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
+import com.example.data.Convertor
 import com.example.domain.model.CusineName
-import com.example.domain.model.Ingredient
 import com.example.domain.model.IngredientName
 import com.example.domain.model.Recipe
-import com.example.foodrecipe.R
+import com.example.foodrecipe.ui.composables.foodrecipemainscreen.BottomSheetRoute
+import com.example.foodrecipe.ui.composables.foodrecipemainscreen.RecipeMainScreenRoute
+import com.example.foodrecipe.ui.composables.recipeHomepage.ingredientbottomsheet.viewmodel.IngredientBottomSheetViewModel
+import com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel.RecipeHomePageEffects
 import com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel.RecipeHomePageViewEvent
 import com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel.RecipeHomePageViewModel
 import com.example.foodrecipe.ui.theme.RecipeAppColor
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import java.net.URLEncoder
+
 
 @Composable
+fun ShowToast(msg: String) {
+    val context = LocalContext.current
+    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialNavigationApi::class)
+@Composable
 fun RecipeHomePageScreen(
-    modifier: Modifier = Modifier, recipeHomePageViewModel: RecipeHomePageViewModel
+    modifier: Modifier = Modifier,
+    recipeHomePageViewModel: RecipeHomePageViewModel,
+    mainNavController: NavHostController
 ) {
     val uiState by recipeHomePageViewModel.states.collectAsState()
+    val homePageController = rememberNavController()
+    LaunchedEffect(homePageController) {
+        homePageController.addOnDestinationChangedListener { _, destination, _ ->
+            val ingredientroute =
+                RecipeHomePageRoute.IngredientBottomSheet::class.java.canonicalName
+            Log.d(
+                "PATH",
+                "path intercepted currentpath - ${destination.route} ing ${ingredientroute}"
+            )
+            if (destination.route == ingredientroute) {
+                Log.d(
+                    "PATH",
+                    "path intercepted currentpath - ${destination.route} ing ${ingredientroute}"
+                )
+            } else {
+                Log.d("PATH", "path noot matched")
+
+            }
+        }
+    }
+
     Loader(modifier = modifier, isLoading = uiState.isLoading) {
         Surface(modifier = Modifier.fillMaxSize()) {
-            if (!uiState.hasError) HomePageComponents(
-                modifier = Modifier,
-                recipeList = uiState.randomRecipes,
-                cuisines = uiState.cuisines,
-                ingredients = uiState.ingredients
-            )
+            LaunchedEffect(Unit) {
+                recipeHomePageViewModel.effects.collectLatest {
+                    when (it) {
+                        is RecipeHomePageEffects.OpenCuisineSearchPage -> {}
+                        RecipeHomePageEffects.OpenIngredientSearchPage -> {}
+                        is RecipeHomePageEffects.OpenIngredientSheet -> {
+                            val ingredients = it.ingredientNames
+                            //open ingredient bottom sheet
+                            val jsonData = Convertor.convertDataToJson(ingredients)
+                            val encodedData = URLEncoder.encode(Json.encodeToString(ingredients),"UTF-8")
+                            Log.d("CUSTOM_DATA","transfer ${encodedData}")
+                            mainNavController.navigate("${BottomSheetRoute.IngredientBottomSheet.route}/${encodedData}")
+                        }
+
+                        is RecipeHomePageEffects.OpenRecipeDetailPage -> {}
+                    }
+                }
+            }
+            if (!uiState.hasError) {
+                NavHost(
+                    navController = homePageController,
+                    startDestination = RecipeHomePageRoute.RecipeHomePage
+                ) {
+                    composable<RecipeHomePageRoute.RecipeHomePage> {
+                        HomePageComponents(
+                            modifier = Modifier,
+                            recipeList = uiState.randomRecipes,
+                            cuisines = uiState.cuisines,
+                            ingredients = uiState.ingredients,
+                            viewAllIngredients = { ingredients ->
+                                recipeHomePageViewModel.processEvent(
+                                    RecipeHomePageViewEvent.ViewAllIngredientClick(
+                                        ingredients
+                                    )
+                                )
+                            }
+                        )
+                    }
+
+                    composable<RecipeHomePageRoute.IngredientBottomSheet> {
+
+                    }
+                }
+
+            }
             if (uiState.hasError) {
                 ErrorPage()
             }
@@ -81,28 +164,77 @@ fun RecipeHomePageScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun IngredientsBottomSheet(
+    modifier: Modifier = Modifier,
+    viewmodel: IngredientBottomSheetViewModel
+) {
+
+    val uiState by viewmodel.states.collectAsState()
+
+    Loader(modifier = modifier, isLoading = uiState.isLoading) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = RecipeAppColor.Black)
+        ) {
+            if (!uiState.hasError) {
+                Text("Success", color = RecipeAppColor.LightOrange)
+            }
+            if (uiState.hasError) {
+                Text("Error", color = RecipeAppColor.LightOrange)
+            }
+        }
+    }
+}
+
+sealed interface RecipeHomePageRoute {
+    @Serializable
+    data class IngredientBottomSheet(val ingredientNames: String) : RecipeHomePageRoute
+
+    @Serializable
+    data object RecipeHomePage : RecipeHomePageRoute
+
+    @Serializable
+    data class RecipeDetailPage(val recipe: Recipe) : RecipeHomePageRoute
+
+}
+
+fun RecipeHomePageRoute.route() = this.javaClass.canonicalName
+
+
 @Composable
 fun HomePageComponents(
     modifier: Modifier = Modifier,
     recipeList: List<Recipe>,
     ingredients: List<IngredientName>,
-    cuisines: List<CusineName>
+    cuisines: List<CusineName>,
+    viewAllIngredients: (ingredients: List<IngredientName>) -> Unit
 ) {
-    Column(
+    LazyColumn(
+        state = rememberLazyListState(),
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(state = rememberScrollState())
     ) {
-        DailyInspirationScreen(recipeList = recipeList)
-        Spacer(modifier = Modifier.height(32.dp))
-        QuickSearchByIngredientScreen(
-            ingredients = ingredients
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        CuisineScreen(
-            modifier = Modifier, cuisines = cuisines
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+        item {
+            DailyInspirationScreen(recipeList = recipeList)
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+        item {
+            QuickSearchByIngredientScreen(
+                ingredients = ingredients,
+                viewallIngredientClicked = viewAllIngredients
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+
+        item {
+            CuisineScreen(
+                modifier = Modifier, cuisines = cuisines
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+        }
     }
 
 }
@@ -134,10 +266,11 @@ fun CuisineScreen(modifier: Modifier, cuisines: List<CusineName>) {
 
 @Composable
 fun QuickSearchByIngredientScreen(
-    modifier: Modifier = Modifier, ingredients: List<IngredientName>
+    modifier: Modifier = Modifier, ingredients: List<IngredientName>,
+    viewallIngredientClicked: (List<IngredientName>) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(RecipeAppColor.bottomBarBgColor),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -167,7 +300,10 @@ fun QuickSearchByIngredientScreen(
                 .padding(horizontal = 32.dp)
                 .fillMaxWidth()
                 .background(shape = RoundedCornerShape(8.dp), color = RecipeAppColor.White)
-                .padding(horizontal = 48.dp, vertical = 12.dp),
+                .padding(horizontal = 48.dp, vertical = 12.dp)
+                .clickable {
+                    viewallIngredientClicked(ingredients)
+                },
             style = TextStyle(
                 color = RecipeAppColor.bottomBarBgColor,
                 fontSize = 16.sp,
@@ -181,7 +317,7 @@ fun QuickSearchByIngredientScreen(
 }
 
 @Composable
-private fun IngredientItem(modifier: Modifier = Modifier, ingredientName: IngredientName) {
+fun IngredientItem(modifier: Modifier = Modifier, ingredientName: IngredientName) {
     Column(
         modifier = modifier.wrapContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally

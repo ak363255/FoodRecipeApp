@@ -23,6 +23,7 @@ class FoodRecipeMainViewModel(
     private val onboardingActionCompletedUseCase: OnboardingActionCompletedUseCase,
 ) : MviViewModel<ViewEvent, ViewResult, ViewState, ViewEffect>(ViewState()) {
 
+
     override fun Flow<ViewEvent>.toResult(): Flow<ViewResult> {
         return merge(
             filterIsInstance<ViewEvent.AppOnboardingStatus>().onBoardingToMainResult(),

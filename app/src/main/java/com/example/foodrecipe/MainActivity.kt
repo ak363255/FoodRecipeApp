@@ -1,5 +1,6 @@
 package com.example.foodrecipe
 
+import MainScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ){
+                   // MainScreen()
                     FoodRecipeMainScreen(foodRecipeMainViewModel = koinViewModel())
                     AnimatedVisibility(visible = !splashCompleted, exit = ExitTransition.None) {
                         SplashScreen(

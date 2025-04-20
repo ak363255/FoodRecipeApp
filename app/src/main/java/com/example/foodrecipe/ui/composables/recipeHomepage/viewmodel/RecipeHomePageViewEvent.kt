@@ -9,8 +9,8 @@ import com.example.foodrecipe.ui.base.MviViewModel
 
 sealed class RecipeHomePageViewEvent: MviViewModel.MviEvent {
      data object GetAllRecipeHomePageContent: RecipeHomePageViewEvent()
-    data class RecipeItemClick(private val recipe: Recipe): RecipeHomePageViewEvent()
-    data class IngredientItemClick(private val ingredient: IngredientName): RecipeHomePageViewEvent()
-    data class CuisineItemClick(private val cusineName: CusineName): RecipeHomePageViewEvent()
-    data class ViewAllIngredientClick(private val cuisines: List<CusineName>): RecipeHomePageViewEvent()
+    data class RecipeItemClick( val recipe: Recipe): RecipeHomePageViewEvent()
+    data class IngredientItemClick( val ingredient: IngredientName): RecipeHomePageViewEvent()
+    data class CuisineItemClick( val cuisineName: CusineName): RecipeHomePageViewEvent()
+    data class ViewAllIngredientClick( val ingredients: List<IngredientName>): RecipeHomePageViewEvent()
 }

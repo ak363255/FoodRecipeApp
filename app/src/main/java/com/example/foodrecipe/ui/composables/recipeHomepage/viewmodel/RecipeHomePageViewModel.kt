@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.merge
 
@@ -25,8 +26,16 @@ class RecipeHomePageViewModel(
     }
     override fun Flow<RecipeHomePageViewEvent>.toResult(): Flow<RecipeHomePageViewResult> {
         return merge(
-            filterIsInstance<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>().togetHomePageContent()
+            filterIsInstance<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>().togetHomePageContent(),
+            filterIsInstance<RecipeHomePageViewEvent.ViewAllIngredientClick>().toOpenIngredientBottomSheet()
         )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun Flow<RecipeHomePageViewEvent.ViewAllIngredientClick>.toOpenIngredientBottomSheet(): Flow<RecipeHomePageViewResult>{
+        return flatMapLatest {
+            flowOf(RecipeHomePageViewResult.OnIngredientSheet(it.ingredients))
+        }
     }
 
     private fun Flow<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>.togetHomePageContent():Flow<RecipeHomePageViewResult>{
@@ -54,7 +63,7 @@ class RecipeHomePageViewModel(
         initialState: RecipeHomePageViewState
     ): RecipeHomePageViewState {
           return when(this){
-              RecipeHomePageViewResult.NoResultFound -> initialState.copy(hasError = true)
+              is RecipeHomePageViewResult.NoResultFound -> initialState.copy(hasError = true, isLoading = false)
               is RecipeHomePageViewResult.OnCuisineSearchPage -> initialState
               is RecipeHomePageViewResult.OnIngredientSearchPage -> initialState
               is RecipeHomePageViewResult.OnIngredientSheet -> initialState
