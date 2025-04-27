@@ -121,12 +121,16 @@ fun RecipeHomePageScreen(
                             val ingredients = it.ingredientNames
                             //open ingredient bottom sheet
                             val jsonData = Convertor.convertDataToJson(ingredients)
-                            val encodedData = URLEncoder.encode(Json.encodeToString(ingredients),"UTF-8")
-                            Log.d("CUSTOM_DATA","transfer ${encodedData}")
+                            val encodedData =
+                                URLEncoder.encode(Json.encodeToString(ingredients), "UTF-8")
+                            Log.d("CUSTOM_DATA", "transfer ${encodedData}")
                             mainNavController.navigate("${BottomSheetRoute.IngredientBottomSheet.route}/${encodedData}")
                         }
 
-                        is RecipeHomePageEffects.OpenRecipeDetailPage -> {}
+                        is RecipeHomePageEffects.OpenRecipeDetailPage -> {
+                            val data = Convertor.convertDataToJson(it.recipe)
+                            mainNavController.navigate(RecipeMainScreenRoute.RecipeDetailPage(data = data))
+                        }
                     }
                 }
             }
@@ -147,6 +151,10 @@ fun RecipeHomePageScreen(
                                         ingredients
                                     )
                                 )
+                            },
+                            recipeItemClicked = {item ->
+                                recipeHomePageViewModel.processEvent(RecipeHomePageViewEvent.RecipeItemClick(item))
+
                             }
                         )
                     }
@@ -210,7 +218,8 @@ fun HomePageComponents(
     recipeList: List<Recipe>,
     ingredients: List<IngredientName>,
     cuisines: List<CusineName>,
-    viewAllIngredients: (ingredients: List<IngredientName>) -> Unit
+    viewAllIngredients: (ingredients: List<IngredientName>) -> Unit,
+    recipeItemClicked:(Recipe)-> Unit
 ) {
     LazyColumn(
         state = rememberLazyListState(),
@@ -218,7 +227,9 @@ fun HomePageComponents(
             .fillMaxSize()
     ) {
         item {
-            DailyInspirationScreen(recipeList = recipeList)
+            DailyInspirationScreen(recipeList = recipeList,itemClicked = {item ->
+                 recipeItemClicked(item)
+            })
             Spacer(modifier = Modifier.height(32.dp))
         }
         item {
@@ -345,7 +356,7 @@ fun String.toColor(): Color {
 }
 
 @Composable
-fun DailyInspirationScreen(modifier: Modifier = Modifier, recipeList: List<Recipe>) {
+fun DailyInspirationScreen(modifier: Modifier = Modifier, recipeList: List<Recipe>,itemClicked:(Recipe)-> Unit) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start,
@@ -365,7 +376,7 @@ fun DailyInspirationScreen(modifier: Modifier = Modifier, recipeList: List<Recip
 
         ) {
             items(recipeList.size) { index ->
-                DailyInspirationItem(recipe = recipeList[index])
+                DailyInspirationItem(recipe = recipeList[index], itemClicked = itemClicked)
                 Spacer(modifier = Modifier.width(12.dp))
             }
         }
@@ -403,10 +414,13 @@ fun CuisineItem(modifier: Modifier = Modifier, cuisine: CusineName) {
 
 
 @Composable
-fun DailyInspirationItem(modifier: Modifier = Modifier, recipe: Recipe) {
+fun DailyInspirationItem(modifier: Modifier = Modifier, recipe: Recipe,itemClicked: (Recipe) -> Unit) {
     val itemWidth = 200.dp
     Box(
         modifier = modifier.width(itemWidth)
+            .clickable{
+                itemClicked(recipe)
+            }
     ) {
 
         Column(

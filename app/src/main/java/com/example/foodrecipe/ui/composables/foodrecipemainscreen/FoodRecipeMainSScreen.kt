@@ -18,9 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Menu
@@ -35,6 +33,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -67,10 +67,10 @@ import com.example.foodrecipe.ui.composables.recipeHomepage.RecipeHomePageScreen
 import com.example.foodrecipe.ui.composables.recipeHomepage.bottomsheetwrapper.BottomSheetNavHost
 import com.example.foodrecipe.ui.composables.recipeHomepage.bottomsheetwrapper.BottomSheetNavigator
 import com.example.foodrecipe.ui.composables.recipeHomepage.bottomsheetwrapper.bottomSheet
+import com.example.foodrecipe.ui.composables.recipedetailpage.RecipeDetailPageScreen
 import com.example.foodrecipe.ui.theme.RecipeAppColor
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLDecoder
 
@@ -253,63 +253,17 @@ fun FoodRecipeMainScreen(
                     startDestination = initialDestination,
                     route = Graph.Root::class
                 ) {
-                    composable<RecipeMainScreenRoute.AppOnboardingPage> {
-                        bottomNavState.value = false
-                        AppBoardingScreen(
-                            onActionCompleted = {
-                                foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingCompletedEvent)
-                            },
-                            modifier = Modifier,
-                            appOnboardingViewModel = koinViewModel(),
-                        )
-                    }
-                    composable<RecipeMainScreenRoute.RecipeHomePage> {
-                        bottomNavState.value = true
-                        RecipeHomePageScreen(
-                            modifier = Modifier,
-                            recipeHomePageViewModel = koinViewModel(),
-                            mainNavController = navController
-                        )
-                    }
-                    composable<RecipeMainScreenRoute.BookmarkPage> {
-                        Text("BookMark")
-
-                    }
-                    composable<RecipeMainScreenRoute.MealPlanPage> {
-                        Text("Meal Plan")
-
-                    }
-                    composable<RecipeMainScreenRoute.SettingPage> {
-                        Text("Setting")
-
-                    }
-                    bottomSheet(
-                        route = "ingredient_sheet/{routeArg}",
-                        navigator = bottomSheetNavigator,
-                        arguments = listOf(
-                            navArgument("routeArg") {
-                                type = NavType.StringType
-                            }
-                        )
-                    ) { backStackEntry ->
-                        val jsonData = backStackEntry.arguments?.getString("routeArg")
-                        Log.d("CUSTOM_DATA", "size ${jsonData}")
-                        jsonData?.let { jsonData ->
-                            val decodedData = URLDecoder.decode(jsonData, "UTF-8")
-                            val ingredients: List<IngredientName>? =
-                                Convertor.convertJsonToData<List<IngredientName>>(decodedData)
-                            Log.d("CUSTOM_DATA", "ingred ${ingredients}")
-                            ingredients?.let {
-                                IngredientBottomSheet(
-                                    modifier = Modifier,
-                                    ingredients = it
-                                )
-                            }
-
-                        }
-
-
-                    }
+                    onBoardingPage(foodRecipeMainViewModel, bottomNavState)
+                    recipeHomePage(foodRecipeMainViewModel, bottomNavState, navController)
+                    bookmarkPage(foodRecipeMainViewModel, bottomNavState)
+                    mealPlanPage(foodRecipeMainViewModel, bottomNavState)
+                    settingPage(foodRecipeMainViewModel, bottomNavState)
+                    allIngredientBottomSheet(
+                        foodRecipeMainViewModel,
+                        bottomNavState,
+                        bottomSheetNavigator
+                    )
+                    recipeDetailPage(bottomNavState)
                 }
             }
 
@@ -319,6 +273,110 @@ fun FoodRecipeMainScreen(
     }
 
 
+}
+
+fun NavGraphBuilder.onBoardingPage(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>
+) {
+    composable<RecipeMainScreenRoute.AppOnboardingPage> {
+        bottomNavState.value = false
+        AppBoardingScreen(
+            onActionCompleted = {
+                foodRecipeMainViewModel.processEvent(ViewEvent.AppOnboardingCompletedEvent)
+            },
+            modifier = Modifier,
+            appOnboardingViewModel = koinViewModel(),
+        )
+    }
+}
+
+fun NavGraphBuilder.recipeHomePage(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>,
+    mainNavController: NavHostController
+) {
+    composable<RecipeMainScreenRoute.RecipeHomePage> {
+        bottomNavState.value = true
+        RecipeHomePageScreen(
+            modifier = Modifier,
+            recipeHomePageViewModel = koinViewModel(),
+            mainNavController = mainNavController
+        )
+    }
+}
+
+fun NavGraphBuilder.bookmarkPage(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>
+) {
+    composable<RecipeMainScreenRoute.BookmarkPage> {
+        Text("BookMark")
+
+    }
+}
+
+fun NavGraphBuilder.mealPlanPage(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>
+) {
+    composable<RecipeMainScreenRoute.MealPlanPage> {
+        Text("Meal Plan")
+
+    }
+}
+
+fun NavGraphBuilder.settingPage(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>
+) {
+    composable<RecipeMainScreenRoute.SettingPage> {
+        Text("Setting")
+
+    }
+}
+
+fun NavGraphBuilder.allIngredientBottomSheet(
+    foodRecipeMainViewModel: FoodRecipeMainViewModel,
+    bottomNavState: MutableState<Boolean>,
+    bottomSheetNavigator: BottomSheetNavigator
+) {
+    bottomSheet(
+        route = "ingredient_sheet/{routeArg}",
+        navigator = bottomSheetNavigator,
+        arguments = listOf(
+            navArgument("routeArg") {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        val jsonData = backStackEntry.arguments?.getString("routeArg")
+        Log.d("CUSTOM_DATA", "size ${jsonData}")
+        jsonData?.let { jsonData ->
+            val decodedData = URLDecoder.decode(jsonData, "UTF-8")
+            val ingredients: List<IngredientName>? =
+                Convertor.convertJsonToData<List<IngredientName>>(decodedData)
+            Log.d("CUSTOM_DATA", "ingred ${ingredients}")
+            ingredients?.let {
+                IngredientBottomSheet(
+                    modifier = Modifier,
+                    ingredients = it
+                )
+            }
+
+        }
+
+    }
+}
+
+fun NavGraphBuilder.recipeDetailPage(bottomNavState: MutableState<Boolean>) {
+    composable<RecipeMainScreenRoute.RecipeDetailPage> {
+        bottomNavState.value = false
+        RecipeDetailPageScreen(
+            modifier = Modifier,
+            viewmodel = koinViewModel()
+        )
+    }
 }
 
 @Composable
@@ -399,6 +457,9 @@ sealed class RecipeMainScreenRoute {
 
     @Serializable
     data object SettingPage : RecipeMainScreenRoute()
+
+    @Serializable
+    data class RecipeDetailPage(val data: String) : RecipeMainScreenRoute()
 
 
 }

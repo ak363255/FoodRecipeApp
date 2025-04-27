@@ -27,7 +27,8 @@ class RecipeHomePageViewModel(
     override fun Flow<RecipeHomePageViewEvent>.toResult(): Flow<RecipeHomePageViewResult> {
         return merge(
             filterIsInstance<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>().togetHomePageContent(),
-            filterIsInstance<RecipeHomePageViewEvent.ViewAllIngredientClick>().toOpenIngredientBottomSheet()
+            filterIsInstance<RecipeHomePageViewEvent.ViewAllIngredientClick>().toOpenIngredientBottomSheet(),
+            filterIsInstance<RecipeHomePageViewEvent.RecipeItemClick>().detailPage()
         )
     }
 
@@ -38,6 +39,16 @@ class RecipeHomePageViewModel(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun Flow<RecipeHomePageViewEvent.RecipeItemClick>.detailPage(): Flow<RecipeHomePageViewResult>{
+        return flatMapLatest {
+            flowOf(RecipeHomePageViewResult.OnRecipeDetailPage(it.recipe))
+        }
+    }
+
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun Flow<RecipeHomePageViewEvent.GetAllRecipeHomePageContent>.togetHomePageContent():Flow<RecipeHomePageViewResult>{
         return flatMapLatest {
             combine(
@@ -79,7 +90,8 @@ class RecipeHomePageViewModel(
 
     override fun Flow<RecipeHomePageViewResult>.toEffect(): Flow<RecipeHomePageEffects> {
         return merge(
-            filterIsInstance<RecipeHomePageViewResult.OnIngredientSheet>().openIngredientBottomSheet()
+            filterIsInstance<RecipeHomePageViewResult.OnIngredientSheet>().openIngredientBottomSheet(),
+            filterIsInstance<RecipeHomePageViewResult.OnRecipeDetailPage>().openDetailPage()
         )
     }
 
@@ -87,6 +99,14 @@ class RecipeHomePageViewModel(
     private fun Flow<RecipeHomePageViewResult.OnIngredientSheet>.openIngredientBottomSheet():Flow<RecipeHomePageEffects>{
         return this.mapLatest {
             RecipeHomePageEffects.OpenIngredientSheet(it.ingredients)
+        }
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun Flow<RecipeHomePageViewResult.OnRecipeDetailPage>.openDetailPage():Flow<RecipeHomePageEffects>{
+        return this.mapLatest {
+            RecipeHomePageEffects.OpenRecipeDetailPage(it.recipe)
         }
 
     }

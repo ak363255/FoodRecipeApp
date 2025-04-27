@@ -6,6 +6,7 @@ import com.example.foodrecipe.ui.composables.recipeHomepage.IngredientsBottomShe
 import com.example.foodrecipe.ui.composables.recipeHomepage.ingredientbottomsheet.viewmodel.IngredientBottomSheetViewModel
 import com.example.foodrecipe.ui.composables.splashscreen.viewmodel.SplashScreenViewModel
 import com.example.foodrecipe.ui.composables.recipeHomepage.viewmodel.RecipeHomePageViewModel
+import com.example.foodrecipe.ui.composables.recipedetailpage.viewmodel.RecipeDetailPageViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -15,4 +16,5 @@ val viewmodelmoudule = module {
     viewModelOf(::SplashScreenViewModel)
     viewModelOf(::RecipeHomePageViewModel)
     viewModelOf(::IngredientBottomSheetViewModel)
+    viewModelOf(::RecipeDetailPageViewModel)
 }

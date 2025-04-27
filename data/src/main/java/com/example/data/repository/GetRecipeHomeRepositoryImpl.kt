@@ -28,8 +28,8 @@ class GetRecipeHomeRepositoryImpl(
         val result = remoteDataSource.getRandomRecipes(url)
         return when (result) {
             is NetworkResponse.Error -> {
-                Result.Success(RecipeList(recipes = emptyList()))
-                //Result.Error(result.error)
+                //Result.Success(RecipeList(recipes = emptyList()))
+                Result.Error(result.error)
             }
 
             is NetworkResponse.Success<RecipesData> -> Result.Success(result.data.toDomain())

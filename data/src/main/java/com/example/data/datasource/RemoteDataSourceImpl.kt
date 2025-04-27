@@ -12,7 +12,8 @@ class RemoteDataSourceImpl(
     private val apiHelper: NetworkHelper
 ): DataSource.RemoteDataSource {
     override suspend fun getRandomRecipes(url: String): NetworkResponse<RecipesData> {
-         return NetworkResponse.Error("")//apiHelper.makeGetRequest(url)
+        // return NetworkResponse.Error("")//
+         return  apiHelper.makeGetRequest(url)
     }
 
     override suspend fun getIngredients(url: String): NetworkResponse<IngredientDataModelList> {
