@@ -85,8 +85,11 @@ Each use case is responsible for a single business logic operation and is inject
 food-recipe-app/
 │
 ├── data/ # Network, local sources, repository implementation
+
 ├── domain/ # Use cases, models, repository interfaces
+
 ├── presentation/ # UI (Jetpack Compose), ViewModels, Navigation
+
 │
 └── build.gradle.kts # Kotlin DSL for Gradle
 
