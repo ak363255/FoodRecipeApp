@@ -82,4 +82,18 @@ Each use case is responsible for a single business logic operation and is inject
 ---
 
 ## 📦 Project Structure
+food-recipe-app/
+│
+├── data/ # Network, local sources, repository implementation
+├── domain/ # Use cases, models, repository interfaces
+├── presentation/ # UI (Jetpack Compose), ViewModels, Navigation
+│
+└── build.gradle.kts # Kotlin DSL for Gradle
+
+## 🧪 Future Enhancements
+
+- Offline support using Room
+- Dark mode theming
+- User authentication for personalized bookmarking
+- Filter recipes by dietary preferences
 
