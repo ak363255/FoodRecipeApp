@@ -84,6 +84,7 @@ Each use case is responsible for a single business logic operation and is inject
 ## 📦 Project Structure
 food-recipe-app/
 │
+
 ├── data/ # Network, local sources, repository implementation
 
 ├── domain/ # Use cases, models, repository interfaces
