@@ -2,6 +2,7 @@ package com.example.foodrecipe.ui.di
 
 import com.example.foodrecipe.ui.composables.apponboarding.viewmodel.AppOnboardingViewModel
 import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.FoodRecipeMainViewModel
+import com.example.foodrecipe.ui.composables.foodrecipemainscreen.viewmodel.SplashViewMode
 import com.example.foodrecipe.ui.composables.recipeHomepage.IngredientsBottomSheet
 import com.example.foodrecipe.ui.composables.recipeHomepage.ingredientbottomsheet.viewmodel.IngredientBottomSheetViewModel
 import com.example.foodrecipe.ui.composables.splashscreen.viewmodel.SplashScreenViewModel
@@ -17,4 +18,5 @@ val viewmodelmoudule = module {
     viewModelOf(::RecipeHomePageViewModel)
     viewModelOf(::IngredientBottomSheetViewModel)
     viewModelOf(::RecipeDetailPageViewModel)
+    viewModelOf(::SplashViewMode)
 }
